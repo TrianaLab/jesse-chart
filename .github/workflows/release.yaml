@@ -1,0 +1,85 @@
+name: Release chart
+
+on:
+  push:
+    branches:
+        - main
+
+permissions:
+  packages: write
+  contents: write
+
+jobs:
+  release-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Helm tool installer
+        uses: Azure/setup-helm@v4.2.0
+
+      - name: Helm login
+        run: |
+          helm registry login ghcr.io \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install YQ
+        uses: dcarbone/install-yq-action@v1.3.1
+
+      - name: Extract chart version and define registry URL
+        run: |
+          VERSION=$(yq e '.version' Chart.yaml)
+          
+          # Lowercase the repository owner
+          OWNER_LOWER=$(echo "${GITHUB_REPOSITORY_OWNER}" | tr '[:upper:]' '[:lower:]')
+          
+          # Extract repository name
+          REPO=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
+          
+          # Construct the lowercased REGISTRY_URL
+          REGISTRY_URL=ghcr.io/${OWNER_LOWER}/${REPO}
+          
+          echo "CHART_VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "REGISTRY_URL=${REGISTRY_URL}" >> $GITHUB_ENV
+
+      - name: Check if chart exists in OCI registry
+        run: |
+          CHART_NAME=jesse-chart
+          CHART_VERSION=${{ env.CHART_VERSION }}
+          REGISTRY_URL=${{ env.REGISTRY_URL }}
+          
+          if helm pull oci://${REGISTRY_URL}/${CHART_NAME} --version ${CHART_VERSION} 2>/dev/null; then
+            echo "CHART_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "CHART_EXISTS=false" >> $GITHUB_ENV
+          fi
+
+      - name: Package and push chart
+        if: env.CHART_EXISTS == 'false'
+        run: |
+          helm dependencies update
+          helm package . --version "${CHART_VERSION}"
+          helm push jesse-${{ env.CHART_VERSION }}.tgz oci://${{ env.REGISTRY_URL }}
+
+      - name: Check if GitHub release exists
+        if: env.CHART_EXISTS == 'false'
+        run: |
+          RELEASE_TAG="${{ env.CHART_VERSION }}"
+          set +e
+          gh api -H "Accept: application/vnd.github.v3+json" /repos/${{ github.repository }}/releases/tags/$RELEASE_TAG > release.json 2>/dev/null
+          if [ $? -eq 0 ]; then
+            echo "RELEASE_EXISTS=true" >> $GITHUB_ENV
+          else
+            echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
+          fi
+          set -e
+
+      - name: Create GitHub release
+        if: env.RELEASE_EXISTS == 'false'
+        run: |
+          RELEASE_TAG="${{ env.CHART_VERSION }}"
+          gh release view "$RELEASE_TAG" || gh release create "$RELEASE_TAG" --title "Version ${{ env.CHART_VERSION }}" --notes "Release for jesse-chart version ${{ env.CHART_VERSION }}."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
