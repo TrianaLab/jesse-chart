@@ -25,11 +25,12 @@ jobs:
       - name: Helm tool installer
         uses: Azure/setup-helm@v4.2.0
 
-      - name: Helm login
+      - name: Helm setup
         run: |
           helm registry login ghcr.io \
             --username ${{ github.actor }} \
             --password ${{ secrets.GITHUB_TOKEN }}
+          helm repo add bitnami https://charts.bitnami.com/bitnami
 
       - name: Setup Python
         uses: actions/setup-python@v5
