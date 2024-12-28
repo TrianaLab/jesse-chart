@@ -1,9 +1,14 @@
 name: Release chart
 
 on:
+  workflow_dispatch:
   push:
     branches:
-        - main
+      - main
+    paths:
+      - Chart.*
+      - templates/**
+      - values.yaml
 
 permissions:
   packages: write
