@@ -2,7 +2,7 @@
 
 A Helm chart for Jesse trade bot
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.0](https://img.shields.io/badge/AppVersion-1.4.0-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.1](https://img.shields.io/badge/AppVersion-1.4.1-informational?style=flat-square)
 
 # Usage
 
@@ -28,14 +28,14 @@ kind create cluster --name jesse-cluster
 
 Pull the values file:
 ```bash
-helm show values oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.1 > values.yaml
+helm show values oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.2 > values.yaml
 ```
 Add the `LICENSE_API_TOKEN` within the `config` field in the `values.yaml` file according to Jesse's [documentation](https://docs.jesse.trade/docs/configuration#environment-variables).
 
 ### Step 3: Install the Helm chart
 
 ```bash
-helm install jesse oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.1 --namespace jesse-namespace --create-namespace -f values.yaml
+helm install jesse oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.2 --namespace jesse-namespace --create-namespace -f values.yaml
 ```
 
 ### Step 4: Verify the deployment
