@@ -1,0 +1,65 @@
+name: Test charts
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - Chart.*
+      - templates/**
+      - values.yaml
+
+permissions:
+  contents: write
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Helm tool installer
+        uses: Azure/setup-helm@v4.2.0
+
+      - name: Helm setup
+        run: |
+          helm registry login ghcr.io \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }}
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          check-latest: true
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.6.1
+
+      - name: Run chart-testing (lint)
+        run: ct lint --target-branch ${{ github.event.repository.default_branch }} --charts .
+
+      - name: Create kind cluster
+        uses: helm/kind-action@v1.10.0
+
+      - name: Run chart-testing (install)
+        run: ct install --target-branch ${{ github.event.repository.default_branch }} --charts .
+
+  helm-docs:
+    needs: lint-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Run helm-docs
+        uses: losisin/helm-docs-github-action@v1
+        with:
+          git-push: true
