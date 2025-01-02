@@ -13,6 +13,7 @@ on:
 permissions:
   packages: write
   contents: write
+  id-token: write
 
 jobs:
   release-chart:
@@ -60,6 +61,9 @@ jobs:
           else
             echo "CHART_EXISTS=false" >> $GITHUB_ENV
           fi
+      
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.7.0
 
       - name: Package and push chart
         if: env.CHART_EXISTS == 'false'
@@ -67,6 +71,7 @@ jobs:
           helm dependencies update
           helm package . --version "${CHART_VERSION}"
           helm push jesse-${{ env.CHART_VERSION }}.tgz oci://${{ env.REGISTRY_URL }}
+          cosign sign --yes ${{ env.REGISTRY_URL }}/jesse:${{ env.CHART_VERSION }}
 
       - name: Check if GitHub release exists
         if: env.CHART_EXISTS == 'false'
