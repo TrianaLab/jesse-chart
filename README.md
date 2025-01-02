@@ -2,7 +2,7 @@
 
 A Helm chart for Jesse trade bot.
 
-![Version: 0.0.5](https://img.shields.io/badge/Version-0.0.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)  [![DOI](https://zenodo.org/badge/909500081.svg)](https://doi.org/10.5281/zenodo.14587093) [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jesse-chart)](https://artifacthub.io/packages/helm/jesse-chart/jesse)
+![Version: 0.0.6](https://img.shields.io/badge/Version-0.0.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.2](https://img.shields.io/badge/AppVersion-1.4.2-informational?style=flat-square)  [![DOI](https://zenodo.org/badge/909500081.svg)](https://doi.org/10.5281/zenodo.14587093) [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jesse-chart)](https://artifacthub.io/packages/helm/jesse-chart/jesse)
 
 # Index
 - [Usage](#usage)
@@ -49,14 +49,14 @@ kind create cluster --name jesse-cluster
 
 Pull the values file:
 ```bash
-helm show values oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.5 > values.yaml
+helm show values oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.6 > values.yaml
 ```
 Add the `LICENSE_API_TOKEN` within the `config` field in the `values.yaml` file according to Jesse's [documentation](https://docs.jesse.trade/docs/configuration#environment-variables).
 
 ### Step 3: Install the Helm chart
 
 ```bash
-helm install jesse oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.5 --namespace jesse-namespace --create-namespace -f values.yaml
+helm install jesse oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.6 --namespace jesse-namespace --create-namespace -f values.yaml
 ```
 
 ### Step 4: Verify the deployment
@@ -154,7 +154,7 @@ This repository is licensed under the GNU Affero General Public License v3.0 (AG
 
 By using this project, you agree to comply with the terms of the AGPLv3 license. See the [LICENSE](LICENSE.md) file for details.
 
-This project also includes third-party dependencies that are subject to their respective licenses. See the [NOTICES](NOTICES.md) file for attribution.
+This project also includes third-party dependencies that are subject to their respective licenses. See the [NOTICES.md](NOTICES.md) file for attribution.
 
 <br>
 
