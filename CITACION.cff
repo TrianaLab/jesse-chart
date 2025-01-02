@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: >
+  If you use this Helm chart to deploy Jesse or refer to this project in your work, please cite it as follows:
+title: "Jesse Helm Chart"
+authors:
+  - family-names: "TrianaLab"
+    given-names: ""
+  - family-names: "Díaz Asencio"
+    given-names: "Eduardo"
+    affiliation: "TrianaLab"
+date-released: "2024-12-29"
+doi: "10.5281/zenodo.14587093"
+url: "https://github.com/TrianaLab/jesse-chart"
+repository-code: "https://github.com/TrianaLab/jesse-chart"
+keywords:
+  - Helm
+  - Kubernetes
+  - Jesse
+  - Trading Bot
+  - Open Source
+license: "AGPL-3.0-or-later"
+abstract: >
+  This Helm chart provides an open-source solution for deploying the Jesse trading bot on Kubernetes,
+  leveraging Redis and PostgreSQL as dependencies. It enables users to orchestrate, scale, and monitor
+  trading bots in a cloud-native environment.
