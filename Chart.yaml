@@ -1,6 +1,6 @@
 apiVersion: v2
 name: jesse
-description: A Helm chart for Jesse trade bot
+description: A Helm chart for Jesse trade bot.
 type: application
 keywords:
   - jesse
@@ -12,7 +12,7 @@ maintainers:
     email: edudiazasencio@gmail.com
     url: https://edudiaz.trianalab.net
 icon: https://jesse.trade/_nuxt/w-01.BBPhGRey.png
-version: 0.0.4
+version: 0.0.5
 appVersion: "1.4.2"
 dependencies:
   - name: postgresql
