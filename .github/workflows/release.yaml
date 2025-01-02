@@ -51,7 +51,7 @@ jobs:
 
       - name: Check if chart exists in OCI registry
         run: |
-          CHART_NAME=jesse-chart
+          CHART_NAME=jesse
           CHART_VERSION=${{ env.CHART_VERSION }}
           REGISTRY_URL=${{ env.REGISTRY_URL }}
           
@@ -91,6 +91,10 @@ jobs:
       
       - name: Setup oras
         uses: oras-project/setup-oras@v1.2.1
+
+      - name: Oras login
+        run: |
+          oras login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
 
       - name: Push OCI metadata to GHCR
         run: |
