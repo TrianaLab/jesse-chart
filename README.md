@@ -154,7 +154,7 @@ This repository is licensed under the GNU Affero General Public License v3.0 (AG
 
 By using this project, you agree to comply with the terms of the AGPLv3 license. See the [LICENSE](LICENSE.md) file for details.
 
-This project also includes third-party dependencies that are subject to their respective licenses. See the [NOTICES.md](NOTICES.md) file for attribution.
+This project also includes third-party dependencies that are subject to their respective licenses. See the [NOTICES](NOTICES.md) file for attribution.
 
 <br>
 
