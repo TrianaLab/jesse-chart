@@ -63,3 +63,17 @@ jobs:
         uses: losisin/helm-docs-github-action@v1
         with:
           git-push: true
+  
+  values-schema:
+    needs: lint-test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Generate values schema json
+      uses: losisin/helm-values-schema-json-action@v1.5.7
+      with:
+        input: values.yaml
