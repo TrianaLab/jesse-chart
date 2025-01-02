@@ -64,7 +64,7 @@ helm install jesse oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.6 --n
 Wait for the deployment to be ready (it can take up to a minute):
 
 ```bash
-kubectl wait --for=condition=available --namespace jesse-namespace deployment/jesse --timeout=120s
+kubectl wait --for=condition=available --namespace jesse-namespace deployment/jesse --timeout=300s
 ```
 
 Ensure all the pods, services, and ingress resources are created and running as expected:
