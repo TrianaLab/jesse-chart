@@ -6,8 +6,8 @@ A Helm chart for Jesse trade bot
 
 # Index
 - [Usage](#usage)
-  - [Prerequisites](##prerequisites)
-  - [Deployment](##deployment)
+  - [Prerequisites](#prerequisites)
+  - [Deployment](#deployment)
     - [Step 1 (optional): create a Kind cluster](#step-1-optional-create-a-kind-cluster)
     - [Step 2: configure Jesse](#step-2-configure-jesse)
     - [Step 3: Install the Helm chart](#step-3-install-the-helm-chart)
