@@ -57,7 +57,6 @@ jobs:
         if: env.chart_updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.PAT }}
           commit-message: Update Jesse version
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           branch: update-jesse-${{ env.latest_version }}
