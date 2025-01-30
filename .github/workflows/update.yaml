@@ -33,24 +33,24 @@ jobs:
           echo "Current Jesse version: $CURRENT_VERSION"
           echo "current_version=$CURRENT_VERSION" >> $GITHUB_ENV
 
-          - name: Compare versions and update Chart.yaml if needed
-          id: update_chart
-          run: |
-            if [ "$(printf '%s\n' "$latest_version" "$current_version" | sort -V | tail -n1)" != "$current_version" ]; then
-              echo "New version detected: Updating Chart.yaml..."
-              yq eval -i ".appVersion = \"$latest_version\"" Chart.yaml
-  
-              # Increment patch version (e.g., 0.0.11 -> 0.0.12)
-              CHART_VERSION=$(yq '.version' Chart.yaml)
-              NEW_CHART_VERSION=$(echo $CHART_VERSION | awk -F. '{print $1"."$2"."$3+1}')
-              yq eval -i ".version = \"$NEW_CHART_VERSION\"" Chart.yaml
-  
-              echo "Updated Chart version to $NEW_CHART_VERSION"
-              echo "chart_updated=true" >> $GITHUB_ENV
-            else
-              echo "No new version found. Skipping update."
-              echo "chart_updated=false" >> $GITHUB_ENV
-            fi
+      - name: Compare versions and update Chart.yaml if needed
+        id: update_chart
+        run: |
+          if [ "$(printf '%s\n' "$latest_version" "$current_version" | sort -V | tail -n1)" != "$current_version" ]; then
+          echo "New version detected: Updating Chart.yaml..."
+          yq eval -i ".appVersion = \"$latest_version\"" Chart.yaml
+
+          # Increment patch version (e.g., 0.0.11 -> 0.0.12)
+          CHART_VERSION=$(yq '.version' Chart.yaml)
+          NEW_CHART_VERSION=$(echo $CHART_VERSION | awk -F. '{print $1"."$2"."$3+1}')
+          yq eval -i ".version = \"$NEW_CHART_VERSION\"" Chart.yaml
+
+          echo "Updated Chart version to $NEW_CHART_VERSION"
+          echo "chart_updated=true" >> $GITHUB_ENV
+          else
+            echo "No new version found. Skipping update."
+            echo "chart_updated=false" >> $GITHUB_ENV
+          fi
 
       - name: Commit and push changes
         if: env.chart_updated == 'true'
