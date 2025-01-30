@@ -52,11 +52,27 @@ jobs:
             echo "chart_updated=false" >> $GITHUB_ENV
           fi
 
-      - name: Commit and push changes
+      - name: Create new branch and push changes
         if: env.chart_updated == 'true'
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "github-actions@users.noreply.github.com"
+            
+          BRANCH_NAME="update-jesse-$latest_version"
+          git checkout -b $BRANCH_NAME
+          
           git add Chart.yaml
           git commit -m "Update Jesse Helm Chart to appVersion $latest_version"
-          git push
+          git push origin $BRANCH_NAME
+  
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+  
+      - name: Create Pull Request
+        if: env.chart_updated == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ${{ env.branch_name }}
+          title: "Update Jesse Helm Chart to appVersion ${{ env.latest_version }}"
+          body: "This PR updates the Jesse Helm Chart to appVersion `${{ env.latest_version }}`."
+          base: main
+          delete-branch: true
