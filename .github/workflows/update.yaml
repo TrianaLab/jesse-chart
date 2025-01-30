@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update-chart:
@@ -59,17 +60,15 @@ jobs:
           git config --global user.email "github-actions@users.noreply.github.com"
             
           BRANCH_NAME="update-jesse-$latest_version"
-          git checkout -b $BRANCH_NAME
           
           git add Chart.yaml
           git commit -m "Update Jesse Helm Chart to appVersion $latest_version"
-          git push origin $BRANCH_NAME
   
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
   
       - name: Create Pull Request
         if: env.chart_updated == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           branch: ${{ env.branch_name }}
           title: "Update Jesse Helm Chart to appVersion ${{ env.latest_version }}"
