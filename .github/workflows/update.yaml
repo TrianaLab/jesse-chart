@@ -1,4 +1,4 @@
-name: Update Jesse Helm Chart
+name: Update Jesse version
 
 on:
   schedule:
@@ -38,16 +38,16 @@ jobs:
         id: update_chart
         run: |
           if [ "$(printf '%s\n' "$latest_version" "$current_version" | sort -V | tail -n1)" != "$current_version" ]; then
-          echo "New version detected: Updating Chart.yaml..."
-          yq eval -i ".appVersion = \"$latest_version\"" Chart.yaml
+            echo "New version detected: Updating Chart.yaml..."
+            yq eval -i ".appVersion = \"$latest_version\"" Chart.yaml
 
-          # Increment patch version (e.g., 0.0.11 -> 0.0.12)
-          CHART_VERSION=$(yq '.version' Chart.yaml)
-          NEW_CHART_VERSION=$(echo $CHART_VERSION | awk -F. '{print $1"."$2"."$3+1}')
-          yq eval -i ".version = \"$NEW_CHART_VERSION\"" Chart.yaml
+            # Increment patch version (e.g., 0.0.11 -> 0.0.12)
+            CHART_VERSION=$(yq '.version' Chart.yaml)
+            NEW_CHART_VERSION=$(echo $CHART_VERSION | awk -F. '{print $1"."$2"."$3+1}')
+            yq eval -i ".version = \"$NEW_CHART_VERSION\"" Chart.yaml
 
-          echo "Updated Chart version to $NEW_CHART_VERSION"
-          echo "chart_updated=true" >> $GITHUB_ENV
+            echo "Updated Chart version to $NEW_CHART_VERSION"
+            echo "chart_updated=true" >> $GITHUB_ENV
           else
             echo "No new version found. Skipping update."
             echo "chart_updated=false" >> $GITHUB_ENV
@@ -57,11 +57,10 @@ jobs:
         if: env.chart_updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: Update Jesse version
-          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          commit-message: Update Jesse to version ${{ env.latest_version }}
           branch: update-jesse-${{ env.latest_version }}
           delete-branch: true
-          title: "Update Jesse Helm Chart to appVersion ${{ env.latest_version }}"
-          body: "Update Jesse Helm Chart to appVersion `${{ env.latest_version }}` and bump patch version."
+          title: "Update Jesse to ${{ env.latest_version }}"
+          body: "Update Jesse Helm Chart appVersion to `${{ env.latest_version }}` and bump patch version."
           labels: |
             automated
