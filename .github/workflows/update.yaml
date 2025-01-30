@@ -52,26 +52,17 @@ jobs:
             echo "No new version found. Skipping update."
             echo "chart_updated=false" >> $GITHUB_ENV
           fi
-
-      - name: Create new branch and push changes
-        if: env.chart_updated == 'true'
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@users.noreply.github.com"
-            
-          BRANCH_NAME="update-jesse-$latest_version"
-          
-          git add Chart.yaml
-          git commit -m "Update Jesse Helm Chart to appVersion $latest_version"
-  
-          echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
-  
+      
       - name: Create Pull Request
         if: env.chart_updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: ${{ env.branch_name }}
-          title: "Update Jesse Helm Chart to appVersion ${{ env.latest_version }}"
-          body: "This PR updates the Jesse Helm Chart to appVersion `${{ env.latest_version }}`."
-          base: main
+          token: ${{ secrets.PAT }}
+          commit-message: Update Jesse version
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          branch: update-jesse-${{ env.latest_version }}
           delete-branch: true
+          title: "Update Jesse Helm Chart to appVersion ${{ env.latest_version }}"
+          body: "Update Jesse Helm Chart to appVersion `${{ env.latest_version }}` and bump patch version."
+          labels: |
+            automated
