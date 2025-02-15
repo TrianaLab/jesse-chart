@@ -39,4 +39,4 @@ jobs:
         with:
           platforms: linux/arm64
           push: true
-          tags: ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}
+          tags: ghcr.io/trianalab/jesse-arm64:${{ inputs.version }}
