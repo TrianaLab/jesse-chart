@@ -2,7 +2,7 @@
 
 A Helm chart for Jesse trade bot.
 
-![Version: 0.0.13](https://img.shields.io/badge/Version-0.0.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.6.4](https://img.shields.io/badge/AppVersion-1.6.4-informational?style=flat-square)  [![DOI](https://zenodo.org/badge/909500081.svg)](https://doi.org/10.5281/zenodo.14587093) [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jesse-chart)](https://artifacthub.io/packages/helm/jesse-chart/jesse)
+![Version: 0.0.16](https://img.shields.io/badge/Version-0.0.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.7.2](https://img.shields.io/badge/AppVersion-1.7.2-informational?style=flat-square)  [![DOI](https://zenodo.org/badge/909500081.svg)](https://doi.org/10.5281/zenodo.14587093) [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/jesse-chart)](https://artifacthub.io/packages/helm/jesse-chart/jesse)
 
 # Index
 - [Usage](#usage)
@@ -49,14 +49,14 @@ kind create cluster --name jesse-cluster
 
 Pull the values file:
 ```bash
-helm show values oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.13 > values.yaml
+helm show values oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.16 > values.yaml
 ```
 Add the `LICENSE_API_TOKEN` within the `config` field in the `values.yaml` file according to Jesse's [documentation](https://docs.jesse.trade/docs/configuration#environment-variables).
 
 ### Step 3: Install the Helm chart
 
 ```bash
-helm install jesse oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.13 --namespace jesse-namespace --create-namespace -f values.yaml
+helm install jesse oci://ghcr.io/trianalab/jesse-chart/jesse --version 0.0.16 --namespace jesse-namespace --create-namespace -f values.yaml
 ```
 
 ### Step 4: Verify the deployment
@@ -136,7 +136,7 @@ kubectl delete namespace jesse-namespace
 | resources | object | `{}` | resources sets the amount of resources the container needs, more information can be found [here](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/). |
 | securityContext | object | `{}` | securityContext defines privilege and access control settings for a container, more information can be found [here](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container). |
 | service.annotations | object | `{}` | service.annotations is for setting Kubernetes Annotations to a Service, more information can be found [here](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/). |
-| service.nodePort | string | `"nil"` | service.nodePort sets a specific node port when service.type is set to `NodePort`, more information can be found [here](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport-custom-port). |
+| service.nodePort | int | `30443` | service.nodePort sets a specific node port when service.type is set to `NodePort`, more information can be found [here](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport-custom-port). |
 | service.port | int | `9000` | service.port sets the port, more information can be found [here](https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports). |
 | service.type | string | `"ClusterIP"` | service.type sets the service type, more information can be found [here](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types). |
 | serviceAccount.annotations | object | `{}` | serviceAccount.annotations to add to the service account. |
