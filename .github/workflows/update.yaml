@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  packages: write
 
 jobs:
   update-chart:
@@ -64,3 +65,9 @@ jobs:
           body: "Update Jesse Helm Chart appVersion to `${{ env.latest_version }}` and bump patch version."
           labels: |
             automated
+      
+      - name: Build arm64 image
+        if: env.chart_updated == 'true'
+        uses: ./.github/workflows/image-build.yaml
+        with:
+          version: ${{ env.latest_version }}
