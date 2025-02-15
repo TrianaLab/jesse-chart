@@ -17,6 +17,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: jesse-ai/jesse
+    
+      - name: List directory structure
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "Listing top-level directories:"
+          ls -la
+          echo "Listing contents of the 'jesse' directory:"
+          ls -la jesse
 
       - name: Check if image exists
         id: check_image
