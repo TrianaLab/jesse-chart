@@ -147,7 +147,7 @@
                     "type": "object"
                 },
                 "nodePort": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "port": {
                     "type": "integer"
