@@ -17,13 +17,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: jesse-ai/jesse
-    
+
+      - name: Check if image exists
+        id: check_image
+        run: |
+          IMAGE="ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}"
+          echo "Checking for image $IMAGE"
+          if docker manifest inspect "$IMAGE" > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Set up Docker Buildx
+        if: steps.check_image.outputs.exists == 'false'
         uses: docker/setup-buildx-action@v3
-          
-      - name: Build and push
+
+      - name: Build and push image
+        if: steps.check_image.outputs.exists == 'false'
         uses: docker/build-push-action@v6
         with:
           platforms: linux/arm64
           push: true
           tags: ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}
+
+      - name: Skip build since image exists
+        if: steps.check_image.outputs.exists == 'true'
+        run: echo "Image ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }} already exists. Skipping build."

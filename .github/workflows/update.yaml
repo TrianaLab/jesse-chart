@@ -67,7 +67,6 @@ jobs:
             automated
       
       - name: Build arm64 image
-        if: env.chart_updated == 'true'
         uses: ./.github/workflows/image-build.yaml
         with:
           version: ${{ env.latest_version }}
