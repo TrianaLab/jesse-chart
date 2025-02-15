@@ -40,7 +40,3 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}
-
-      - name: Skip build since image exists
-        if: steps.check_image.outputs.exists == 'true'
-        run: echo "Image ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }} already exists. Skipping build."

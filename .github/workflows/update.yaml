@@ -67,6 +67,6 @@ jobs:
             automated
       
       - name: Build arm64 image
-        uses: ./.github/workflows/image-build.yaml
+        uses: TrianaLab/jesse-chart/.github/workflows/image-build.yaml@main
         with:
           version: ${{ env.latest_version }}
