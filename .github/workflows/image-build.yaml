@@ -1,11 +1,11 @@
 on:
-    workflow_dispatch:
-    workflow_call:
-      inputs:
-        version:
-          required: true
-          type: string
-  
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
 permissions:
   contents: read
   packages: write
@@ -14,29 +14,33 @@ jobs:
   build-image:
     runs-on: ubuntu-24.04-arm
     steps:
-    - uses: actions/checkout@v4
-      with:
-        repository: jesse-ai/jesse
+      - uses: actions/checkout@v4
+        with:
+          repository: jesse-ai/jesse
 
-    - name: Check if image exists
-      id: check_image
-      run: |
-        IMAGE="ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}"
-        echo "Checking for image $IMAGE"
-        if docker manifest inspect "$IMAGE" > /dev/null 2>&1; then
+      - name: Check if image exists
+        id: check_image
+        run: |
+          IMAGE="ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}"
+          echo "Checking for image $IMAGE"
+          if docker manifest inspect "$IMAGE" > /dev/null 2>&1; then
             echo "exists=true" >> $GITHUB_OUTPUT
-        else
+          else
             echo "exists=false" >> $GITHUB_OUTPUT
-        fi
+          fi
 
-    - name: Set up Docker Buildx
-      if: steps.check_image.outputs.exists == 'false'
-      uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        if: steps.check_image.outputs.exists == 'false'
+        uses: docker/setup-buildx-action@v3
 
-    - name: Build and push image
-      if: steps.check_image.outputs.exists == 'false'
-      uses: docker/build-push-action@v6
-      with:
-        platforms: linux/arm64
-        push: true
-        tags: ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}
+      - name: Build and push image
+        if: steps.check_image.outputs.exists == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/arm64
+          push: true
+          tags: ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }}
+
+      - name: Skip build since image exists
+        if: steps.check_image.outputs.exists == 'true'
+        run: echo "Image ghcr.io/TrianaLab/jesse-arm64:${{ inputs.version }} already exists. Skipping build."
