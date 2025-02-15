@@ -11,9 +11,21 @@ permissions:
   packages: write
 
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      latest_version: ${{ steps.get_latest_version.outputs.latest_version }}
+    steps:
+      - name: Get latest Jesse pip version
+        id: get_latest_version
+        run: |
+          LATEST_VERSION=$(curl -s https://pypi.org/pypi/jesse/json | jq -r '.info.version')
+          echo "Latest Jesse version: $LATEST_VERSION"
+          echo "latest_version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+
   update-chart:
     runs-on: ubuntu-latest
-
+    needs: get-version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,23 +33,18 @@ jobs:
       - name: Install YQ
         uses: dcarbone/install-yq-action@v1.3.1
 
-      - name: Get latest Jesse pip version
-        id: get_latest_version
-        run: |
-          LATEST_VERSION=$(curl -s https://pypi.org/pypi/jesse/json | jq -r '.info.version')
-          echo "Latest Jesse version: $LATEST_VERSION"
-          echo "latest_version=$LATEST_VERSION" >> $GITHUB_ENV
-
       - name: Read current appVersion from Chart.yaml
         id: read_current_version
         run: |
           CURRENT_VERSION=$(yq '.appVersion' Chart.yaml)
           echo "Current Jesse version: $CURRENT_VERSION"
-          echo "current_version=$CURRENT_VERSION" >> $GITHUB_ENV
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
       - name: Compare versions and update Chart.yaml if needed
         id: update_chart
         run: |
+          latest_version="${{ needs.get-version.outputs.latest_version }}"
+          current_version="${{ steps.read_current_version.outputs.current_version }}"
           if [ "$(printf '%s\n' "$latest_version" "$current_version" | sort -V | tail -n1)" != "$current_version" ]; then
             echo "New version detected: Updating Chart.yaml..."
             yq eval -i ".appVersion = \"$latest_version\"" Chart.yaml
@@ -48,25 +55,22 @@ jobs:
             yq eval -i ".version = \"$NEW_CHART_VERSION\"" Chart.yaml
 
             echo "Updated Chart version to $NEW_CHART_VERSION"
-            echo "chart_updated=true" >> $GITHUB_ENV
           else
             echo "No new version found. Skipping update."
-            echo "chart_updated=false" >> $GITHUB_ENV
           fi
       
       - name: Create Pull Request
-        if: env.chart_updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: Update Jesse to version ${{ env.latest_version }}
-          branch: update-jesse-${{ env.latest_version }}
+          commit-message: "Update Jesse to version ${{ needs.get-version.outputs.latest_version }}"
+          branch: update-jesse-${{ needs.get-version.outputs.latest_version }}
           delete-branch: true
-          title: "Update Jesse to ${{ env.latest_version }}"
-          body: "Update Jesse Helm Chart appVersion to `${{ env.latest_version }}` and bump patch version."
-          labels: |
-            automated
-      
-      - name: Build arm64 image
-        uses: TrianaLab/jesse-chart/.github/workflows/image-build.yaml@main
-        with:
-          version: ${{ env.latest_version }}
+          title: "Update Jesse to ${{ needs.get-version.outputs.latest_version }}"
+          body: "Update Jesse Helm Chart appVersion to `${{ needs.get-version.outputs.latest_version }}` and bump patch version."
+          labels: automated
+
+  build-arm64-image:
+    needs: get-version
+    uses: TrianaLab/jesse-chart/.github/workflows/image-build.yaml@main
+    with:
+      version: ${{ needs.get-version.outputs.latest_version }}
