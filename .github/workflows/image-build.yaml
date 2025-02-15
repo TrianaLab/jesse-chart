@@ -38,5 +38,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/arm64
+          context: ./jesse
           push: true
           tags: ghcr.io/trianalab/jesse-arm64:${{ inputs.version }}
