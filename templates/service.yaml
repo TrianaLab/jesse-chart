@@ -16,7 +16,7 @@ spec:
       protocol: TCP
       name: http
       {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePort }}
-      nodePort: {{ .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort | quote }}
       {{- end }}
   selector:
     {{- include "jesse.selectorLabels" . | nindent 4 }}

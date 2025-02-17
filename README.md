@@ -18,6 +18,7 @@ A Helm chart for Jesse trade bot.
 - [Configuration](#configuration)
   - [Requirements](#requirements)
   - [Values](#values)
+- [ARM64 support](#arm64-support)
 - [License](#license)
 - [Support](#support)
 - [Contributions](#contributions)
@@ -146,6 +147,12 @@ kubectl delete namespace jesse-namespace
 | tolerations | list | `[]` | tolerations allow the scheduler to schedule pods with matching taints, more information can be found [here](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/). |
 | volumeMounts | list | `[]` | volumeMounts is a list of additional volumeMounts on the output Deployment definition. |
 | volumes | list | `[]` | volumes is a list of additional volumes on the output Deployment definition. |
+
+<br>
+
+# ARM64 support
+
+This project also builds a [linux/arm64](https://github.com/TrianaLab/jesse-chart/pkgs/container/jesse-arm64) version of the [official Jesse image](https://hub.docker.com/r/salehmir/jesse), which is for linux/amd64. It does not include the [live-trade](https://docs.jesse.trade/docs/livetrade#live-trade) plugin due to libraries limitations, but for the moment it can be used for backtesting in linux arm64 devices.
 
 <br>
 
