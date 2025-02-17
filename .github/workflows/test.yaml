@@ -9,6 +9,8 @@ on:
       - Chart.*
       - templates/**
       - values.yaml
+      - README.*
+      - values.schema.json
 
 permissions:
   contents: write
