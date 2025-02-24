@@ -81,7 +81,7 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: postgres
+                  name: postgresql
                   key: postgres-password
       containers:
         - name: {{ .Chart.Name }}
