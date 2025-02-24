@@ -41,31 +41,48 @@ spec:
           volumeMounts:
             - name: home-volume
               mountPath: /home
-        - name: wait-for-dependencies
-          image: busybox:latest
+        - name: wait-for-redis
+          image: redis:alpine
           command:
             - sh
             - -c
             - |
-              until nc -z ${POSTGRES_HOST} ${POSTGRES_PORT}; do
-                echo "Waiting for PostgreSQL at ${POSTGRES_HOST}:${POSTGRES_PORT}..."
-                sleep 2
-              done
-              echo "PostgreSQL is ready."
-              until nc -z ${REDIS_HOST} ${REDIS_PORT}; do
-                echo "Waiting for Redis at ${REDIS_HOST}:${REDIS_PORT}..."
+              until redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" ping; do
+                echo "Waiting for Redis..."
                 sleep 2
               done
               echo "Redis is ready."
+          env:
+            - name: REDIS_HOST
+              value: {{ .Values.redis.fullnameOverride }}-master
+            - name: REDIS_PORT
+              value: {{ .Values.redis.master.containerPorts.redis | quote }}
+            - name: REDISCLI_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
+        - name: wait-for-postgres
+          image: postgres:alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT"; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready."
           env:
             - name: POSTGRES_HOST
               value: {{ .Values.postgresql.fullnameOverride }}
             - name: POSTGRES_PORT
               value: {{ .Values.postgresql.containerPorts.postgresql | quote }}
-            - name: REDIS_HOST
-              value: {{ .Values.redis.fullnameOverride }}-master
-            - name: REDIS_PORT
-              value: {{ .Values.redis.master.containerPorts.redis | quote }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: postgres-password
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
