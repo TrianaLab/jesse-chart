@@ -12,8 +12,8 @@ maintainers:
     email: edudiazasencio@gmail.com
     url: https://edudiaz.trianalab.net
 icon: https://jesse.trade/_nuxt/w-01.BBPhGRey.png
-version: 0.0.38
-appVersion: "1.10.1"
+version: 0.0.39
+appVersion: "1.10.2"
 dependencies:
   - name: postgresql
     version: "16.4.9"
